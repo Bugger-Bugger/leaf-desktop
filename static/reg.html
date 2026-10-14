@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Leaf</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="stylesheet" href="reg_style.css">
+</head>
+<body>
+
+<div class="auth-card">
+  <div class="brand"><span class="brand-icon">🌿</span> Leaf</div>
+
+  <!-- ===================== РЕГИСТРАЦИЯ ===================== -->
+  <section id="screen-register" class="screen active">
+    <h1>Регистрация</h1>
+
+    <label>Логин (никнейм)</label>
+    <input id="reg-login" placeholder="example" autocomplete="username">
+
+    <label>Имя пользователя</label>
+    <input id="reg-username" placeholder="@Example">
+
+    <label>Email</label>
+    <input id="reg-gmail" placeholder="example@email.com" autocomplete="email">
+
+    <label>Пароль</label>
+    <input id="reg-password" type="password" placeholder="минимум 6 символов" autocomplete="new-password">
+
+    <label>Повтор пароля</label>
+    <input id="reg-password-confirm" type="password" placeholder="повторите пароль" autocomplete="new-password">
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="reg-agree">
+      <span>Я принимаю <a href="#">Пользовательское соглашение</a> и <a href="#">Политику конфиденциальности</a></span>
+    </label>
+
+    <div class="error" id="reg-error"></div>
+
+    <button class="btn-primary" id="reg-submit">Зарегистрироваться</button>
+    <p class="switch-link">Уже есть аккаунт? <a href="#" data-switch="login">Войти</a></p>
+  </section>
+
+  <!-- ===================== ВХОД ===================== -->
+  <section id="screen-login" class="screen">
+    <h1>Вход</h1>
+
+    <label>Логин</label>
+    <input id="login-login" placeholder="example" autocomplete="username">
+
+    <label>Email</label>
+    <input id="login-gmail" placeholder="example@email.com" autocomplete="email">
+
+    <label>Пароль</label>
+    <input id="login-password" type="password" placeholder="Пароль" autocomplete="current-password">
+
+    <div class="error" id="login-error"></div>
+
+    <button class="btn-primary" id="login-submit">Войти</button>
+    <p class="switch-link">Нет аккаунта? <a href="#" data-switch="register">Зарегистрироваться</a></p>
+  </section>
+
+  <!-- ===================== ПОДТВЕРЖДЕНИЕ КОДА ===================== -->
+  <section id="screen-verify" class="screen">
+    <h1 id="verify-title">Подтверждение gmail</h1>
+    <p class="verify-hint">Мы отправили код на <strong id="verify-gmail">—</strong></p>
+
+    <label>Код из письма</label>
+    <div class="otp-row" id="otp-row">
+      <input maxlength="1" inputmode="numeric" class="otp-box">
+      <input maxlength="1" inputmode="numeric" class="otp-box">
+      <input maxlength="1" inputmode="numeric" class="otp-box">
+      <input maxlength="1" inputmode="numeric" class="otp-box">
+      <input maxlength="1" inputmode="numeric" class="otp-box">
+      <input maxlength="1" inputmode="numeric" class="otp-box">
+    </div>
+
+    <div class="error" id="verify-error"></div>
+
+    <button class="btn-primary" id="verify-submit">Подтвердить</button>
+    <p class="switch-link"><a href="#" id="verify-resend">Отправить код ещё раз</a></p>
+    <p class="switch-link"><a href="#" id="verify-back">Назад к регистрации</a></p>
+  </section>
+
+  <div class="loading-overlay" id="loading" hidden>
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

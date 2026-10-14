@@ -1,0 +1,60 @@
+О файлах:
+telemetry - файл содержащий в себе конфиг пк клиента
+server - не будет публикован в версии а должен быть только на сервере (при билде удалить файл)
+static/ - дизайн (НЕ ИЗМЕНЯТЬ)
+api_adapter.py - локальный API-адаптер, проксирует запросы SPA на сервер leaf-web
+client.py - основной файл десктоп-клиента (v2)
+api_client.py - HTTP-клиент для общения с сервером
+bridge.py - QWebChannel мост для авторизации (JS <-> Python)
+session_store.py - сохранение сессии в keyring
+db.py - локальная SQLite БД (для офлайн-кеша, пока не используется)
+
+Запретная зона:
+Не меняйте дизайн в static/. Кроме пунктов где сам я просил (ниже).
+
+ПО СЕРВЕРУ (выполнено):
+1. Подключить БД-сервер к клиенту - сервер leaf-web используется напрямую
+2. Вместо yt-dlp поставить soundcloud v2 - сервер уже использует soundcloud-v2
+3. Сделать конект клиента и сервера - через api_adapter.py (HTTP прокси)
+
+ПО КЛИЕНТУ (v2 — текущая версия):
+1. client.py — основное окно запускается в отдельном десктоп окне через QWebEngineView
+   not-network — появляется если нету интернета (показывает скачанные треки из localStorage)
+2. Окно регистрации и входа — работает через QWebEngineView + QWebChannel (reg.html + bridge.py)
+3. Иконки — используются из static/images/ (LeafGreen.png, favicon.ico и др.)
+4. Фейковые кнопки — радио, топы, поджанры отсутствуют в текущей версии SPA
+5. Фичи из веба — поиск, артисты, плеер, настройки, плейлисты работают через API сервера
+6. Баг вздрагивания — исправлен: вместо нативных Qt-виджетов используется QWebEngineView
+
+АРХИТЕКТУРА:
+  SPA (index.html/index.js) загружается в QWebEngineView
+    -> fetch('/api/search?q=...') идёт на localhost:PORT
+    -> api_adapter.py транслирует и проксирует на реальный сервер
+    -> ответ возвращается в SPA
+
+  Авторизация:
+    reg.html в QWebEngineView -> bridge.py -> api_client.py -> сервер
+    cookie сессии сохраняется в keyring и синхронизируется с WebView
+
+ЗАПУСК:
+  1. Запустите сервер leaf-web: uvicorn main:app --reload --port 5000
+  2. Запустите десктоп: python client.py
+  3. Сервер по умолчанию: https://leafmusic.fun (меняется в SERVER_BASE_URL в client.py)
+
+ЗАВИСИМОСТИ (десктоп):
+  - PySide6 + PySide6-Addons (Qt6 + QWebEngine)
+  - requests
+  - keyring
+  - Flask + flask-cors (для api_adapter.py)
+
+ПОДДЕРЖИВАЕМЫЕ API ЭНДПОИНТЫ:
+  Auth: register, register/verify, register/resend, login, login/verify, login/resend, logout, me
+  Search: search, search/artists, search/albums, search/playlists
+  Artist: artist/{source}/{id}
+  Stream: stream/{id}
+  Playlists: playlists (CRUD), playlists/{id}/tracks, playlists/{id}/visibility
+  Liked: liked (CRUD), liked/visibility
+  Recommendations: recommendations, my-wave, echo
+  User profiles: users/{login}/profile, users/{login}/library, users/{login}/liked
+  Settings: settings/theme, change-password, change-login
+  Subscription: subscription, subscription/plans, subscription/redeem
